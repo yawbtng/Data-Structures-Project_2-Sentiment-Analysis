@@ -1,0 +1,43 @@
++----------------------------------+
+|           DSString               |
++----------------------------------+
+| - data : char*                   |
+| - len  : int                     |
++----------------------------------+
+| + DSString()                     |
+| + DSString(const char*)          |
+| + DSString(const DSString&)      |
+| + ~DSString()                    |
+| + operator=(const DSString&) : DSString& |
+| + operator+(const DSString&) : DSString  |
+| + operator==(const DSString&) : bool     |
+| + operator<(const DSString&) : bool      |
+| + operator>(const DSString&) : bool      |
+| + operator[](int) : char&        |
+| + size() : int                   |
+| + c_str() : const char*          |
++----------------------------------+
+
+                  (uses)
+
++----------------------------------+
+|      SentimentClassifier         |
++----------------------------------+
+| - wordCounts : map<DSString, pair<int,int>>  
+| - totalPos   : int
+| - totalNeg   : int
++----------------------------------+
+| + train(const DSString&) : void                |
+| + predict(const DSString&, const DSString&) : void  |
+| + evaluatePredictions(const DSString&, const DSString&) : void |
+| - tokenizeTweet(const DSString&) : vector<DSString>  |
+| - toLowerCase(DSString&) : void                 |
++----------------------------------+
+
+                  (created and called by)
+
++----------------------------------+
+|               main               |
++----------------------------------+
+| int main(int argc, char* argv[]) |
++----------------------------------+
