@@ -337,7 +337,7 @@ bool SentimentClassifier::evaluatePredictions(const DSString& groundTruthFile, c
     int correctPredictions = 0;
     int totalPredictions = 0;
     
-    // Store misclassifications for output
+    // Compare predictions to actual sentiments
     std::vector<std::tuple<int, int, DSString>> misclassifications; // (predicted, actual, tweetID)
     
     // Read the ground truth file line by line
@@ -363,8 +363,8 @@ bool SentimentClassifier::evaluatePredictions(const DSString& groundTruthFile, c
         }
         
         // Extract tweet ID and actual sentiment
-        DSString tweetID = fields[0];
-        int actualSentiment = (fields[1][0] == '4') ? 4 : 0;
+        DSString tweetID = fields[1]; // The ID is in the second column (index 1)
+        int actualSentiment = (fields[0][0] == '4') ? 4 : 0; // The sentiment is in the first column (index 0)
         
         // Lookup our prediction
         auto it = predictions.find(tweetID);
@@ -385,7 +385,12 @@ bool SentimentClassifier::evaluatePredictions(const DSString& groundTruthFile, c
     }
     
     // Calculate accuracy
-    double accuracy = static_cast<double>(correctPredictions) / totalPredictions;
+    double accuracy = 0.0;
+    if (totalPredictions > 0) {
+        accuracy = static_cast<double>(correctPredictions) / totalPredictions;
+    } else {
+        std::cerr << "Warning: No predictions were matched with ground truth! Check that your files contain matching tweet IDs." << std::endl;
+    }
     
     // Write accuracy to the first line (3 decimal places)
     accFile << std::fixed << std::setprecision(3) << accuracy << std::endl;

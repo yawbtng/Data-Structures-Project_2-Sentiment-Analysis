@@ -1,43 +1,88 @@
-+----------------------------------+
-|           DSString               |
-+----------------------------------+
-| - data : char*                   |
-| - len  : int                     |
-+----------------------------------+
-| + DSString()                     |
-| + DSString(const char*)          |
-| + DSString(const DSString&)      |
-| + ~DSString()                    |
-| + operator=(const DSString&) : DSString& |
-| + operator+(const DSString&) : DSString  |
-| + operator==(const DSString&) : bool     |
-| + operator<(const DSString&) : bool      |
-| + operator>(const DSString&) : bool      |
-| + operator[](int) : char&        |
-| + size() : int                   |
-| + c_str() : const char*          |
-+----------------------------------+
++------------------------------------------+
+|               DSString                  |
++------------------------------------------+
+| - data: char*                           |
+| - length: int                           |
++------------------------------------------+
+| + DSString()                            |
+| + DSString(const char*)                 |
+| + DSString(const DSString&)             |
+| + ~DSString()                           |
+| + operator=(const DSString&): DSString& |
+| + operator+(const DSString&): DSString  |
+| + operator==(const DSString&): bool     |
+| + operator<(const DSString&): bool      |
+| + operator>(const DSString&): bool      |
+| + operator[](int): char&                |
+| + operator[](int) const: const char&    |
+| + size() const: int                     |
+| + c_str() const: const char*            |
+| + substring(int, int) const: DSString   |
+| + toLowerCase() const: DSString         |
+| + <<: friend ostream&                   |
++------------------------------------------+
 
-                  (uses)
+                     |
+                     | uses
+                     v
 
-+----------------------------------+
-|      SentimentClassifier         |
-+----------------------------------+
-| - wordCounts : map<DSString, pair<int,int>>  
-| - totalPos   : int
-| - totalNeg   : int
-+----------------------------------+
-| + train(const DSString&) : void                |
-| + predict(const DSString&, const DSString&) : void  |
-| + evaluatePredictions(const DSString&, const DSString&) : void |
-| - tokenizeTweet(const DSString&) : vector<DSString>  |
-| - toLowerCase(DSString&) : void                 |
-+----------------------------------+
++--------------------------------------------------------+
+|              SentimentClassifier                        |
++--------------------------------------------------------+
+| - wordSentimentCounts: map<DSString, pair<int, int>>    |
+| - predictions: map<DSString, int>                       |
+| - totalPositiveTweets: int                              |
+| - totalNegativeTweets: int                              |
++--------------------------------------------------------+
+| + SentimentClassifier()                                 |
+| + train(const DSString&): bool                          |
+| + predict(const DSString&, const DSString&): bool       |
+| + evaluatePredictions(const DSString&, const DSString&): bool |
+| - tokenizeTweet(const DSString&) const: vector<DSString> |
+| - parseCSVLine(const DSString&, bool) const: vector<DSString> |
+| - calculateSentimentScore(const vector<DSString>&) const: int |
++--------------------------------------------------------+
 
-                  (created and called by)
+                     ^
+                     | creates and uses
+                     |
 
-+----------------------------------+
-|               main               |
-+----------------------------------+
-| int main(int argc, char* argv[]) |
-+----------------------------------+
++--------------------------------------------------------+
+|                        Main                             |
++--------------------------------------------------------+
+| displayUsage(): void                                    |
+| main(int argc, char** argv): int                        |
++--------------------------------------------------------+
+
+//=== Helper Functions (outside classes) ===//
+
++--------------------------------------------------------+
+|              String Utility Functions                   |
++--------------------------------------------------------+
+| stringLength(const char*): int                          |
+| stringCopy(char*, const char*, int): void               |
+| stringCompare(const char*, const char*): int            |
++--------------------------------------------------------+
+
+//=== Class Relationships ===//
+
+[DSString] <--- [SentimentClassifier]
+    ^ Custom string class used by classifier for text processing
+
+[SentimentClassifier] <--- [Main]
+    ^ Main program instantiates and calls classifier methods
+    
+[String Utility Functions] <--- [DSString]
+    ^ Helper functions used by DSString for low-level string operations
+
+//=== Execution Flow ===//
+1. Main parses command-line arguments
+2. Main creates SentimentClassifier instance
+3. SentimentClassifier.train() processes training data
+4. SentimentClassifier.predict() generates predictions
+5. SentimentClassifier.evaluatePredictions() calculates accuracy
+
+//=== Data Flow ===//
+1. Training data -> SentimentClassifier -> wordSentimentCounts
+2. Test data -> SentimentClassifier -> predictions
+3. Ground truth -> SentimentClassifier -> accuracy metrics
